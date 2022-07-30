@@ -20,6 +20,13 @@ public class Main {
 
     public static void main(String[] args) {
 
+        generateMarkets();
+        getReports();
+
+    }
+
+    static void generateMarkets() {
+
         Random rnd = new Random();
 
         for (int i = 0; i < NUMBER_OF_MARKETS; i++) {
@@ -35,32 +42,49 @@ public class Main {
 
         }
 
+    }
+
+    static void getReports() {
+
         // В конце рабочего дня создаём пул потоков по количеству магазинов
         ExecutorService threadPool = Executors.newFixedThreadPool(NUMBER_OF_MARKETS);
 
-        List<Future<String>> futureTask = new ArrayList<>();
+        List<Future<MarketReport>> futureTask = new ArrayList<>();
 
         // Запускаем подсчёт
+        MarketReport[] marketReports = new MarketReport[NUMBER_OF_MARKETS];
+
         for (int i = 0; i < NUMBER_OF_MARKETS; i++) {
             String marketName = "магазин " + (i + 1);
-            futureTask.add(threadPool.submit(new Market(salesMarket[i], marketName)));
+            marketReports[i] = new MarketReport(salesMarket[i], marketName);
+
+            futureTask.add(threadPool.submit(marketReports[i]));
         }
 
         // Формируем итоговый отчёт и выводим в консоль
         System.out.println("Отчёт по выручке");
         System.out.println("------------------");
 
-        for (Future<String> revenue: futureTask) {
+        long totalAmount = 0;
+
+        for (Future<MarketReport> marketReport: futureTask) {
 
             try {
-                System.out.println(revenue.get());
+                MarketReport currentReport = marketReport.get();
+                totalAmount += currentReport.getRevenue();
+                System.out.println(currentReport);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
+            System.out.println("------------------");
+
         }
 
+        System.out.println("Общая выручка: " + totalAmount);
+
         threadPool.shutdown();
+
     }
 
 }
