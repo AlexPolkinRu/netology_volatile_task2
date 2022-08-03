@@ -12,19 +12,19 @@ public class Market extends Thread {
     static final int MIN_PRICE = 50;
     static final int MAX_PRICE = 10000;
 
-    private static final Random rnd = new Random();
+    public final String NAME;
 
-//    public final String name;
+    private static final Random rnd = new Random();
+    private int dailyRevenue = 0;
+
     private int[] sales;
 
     public Market(String name) {
-        super(name);
+        NAME = name;
     }
 
     @Override
     public void run() {
-
-        int dailyRevenue = 0;
 
         // Генерируем объём продаж в магазине
         int salesValue = rnd.nextInt(MAX_SALES_VALUE - MIN_SALES_VALUE) + MIN_SALES_VALUE;
@@ -36,12 +36,14 @@ public class Market extends Thread {
             dailyRevenue += sales[i];
         }
 
-        System.out.println("Выручка за день " + Thread.currentThread().getName() + ": "  + dailyRevenue);
-
     }
 
     public int[] getSales() {
         return sales;
+    }
+
+    public int getDailyRevenue() {
+        return dailyRevenue;
     }
 
 }

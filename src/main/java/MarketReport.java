@@ -18,6 +18,7 @@ public class MarketReport extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Выручка за день " + MARKET.NAME + ": "  + MARKET.getDailyRevenue());
         Arrays.stream(MARKET.getSales()).forEach(REVENUE::add);
     }
 
