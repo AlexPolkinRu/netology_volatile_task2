@@ -5,7 +5,7 @@ import java.util.Random;
  * 03.08.2022
  */
 
-public class Market extends Thread {
+public class Shop extends Thread {
 
     static final int MIN_SALES_VALUE = 1000;
     static final int MAX_SALES_VALUE = 10000;
@@ -19,7 +19,7 @@ public class Market extends Thread {
 
     private int[] sales;
 
-    public Market(String name) {
+    public Shop(String name) {
         NAME = name;
     }
 

@@ -7,27 +7,27 @@ import java.util.concurrent.atomic.LongAdder;
 
 public class Main {
 
-    static final int NUMBER_OF_MARKETS = 3;
-    static final Market[] markets = new Market[NUMBER_OF_MARKETS];
+    static final int NUMBER_OF_SHOPS = 3;
+    static final Shop[] SHOPS = new Shop[NUMBER_OF_SHOPS];
 
     public static void main(String[] args) {
 
         LongAdder revenue = new LongAdder();
 
-        generateMarkets();
+        generateShops();
         getReports(revenue);
 
     }
 
-    static void generateMarkets() {
-        for (int i = 0; i < NUMBER_OF_MARKETS; i++) {
-            markets[i] = new Market("магазин №" + (i + 1));
-            markets[i].start();
+    static void generateShops() {
+        for (int i = 0; i < NUMBER_OF_SHOPS; i++) {
+            SHOPS[i] = new Shop("магазин №" + (i + 1));
+            SHOPS[i].start();
         }
 
         // Ожидаем окончания работы запущенных потоков
         try {
-            for (Market thread : markets) {
+            for (Shop thread : SHOPS) {
                 thread.join();
             }
         } catch (InterruptedException e) {
@@ -38,16 +38,16 @@ public class Main {
     static void getReports(LongAdder revenue) {
 
         // В конце рабочего дня запускаем потоки подсчёта выручки по каждому магазину
-        final MarketReport[] marketReports = new MarketReport[NUMBER_OF_MARKETS];
+        final ShopReport[] shopReports = new ShopReport[NUMBER_OF_SHOPS];
 
-        for (int i = 0; i < NUMBER_OF_MARKETS; i++) {
-            marketReports[i] = new MarketReport(markets[i], revenue);
-            marketReports[i].start();
+        for (int i = 0; i < NUMBER_OF_SHOPS; i++) {
+            shopReports[i] = new ShopReport(SHOPS[i], revenue);
+            shopReports[i].start();
         }
 
         // Ожидаем окончания работы запущенных потоков
         try {
-            for (MarketReport thread : marketReports) {
+            for (ShopReport thread : shopReports) {
                 thread.join();
             }
         } catch (InterruptedException e) {
